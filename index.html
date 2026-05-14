@@ -7,12 +7,12 @@
     <style>
         body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; padding: 20px; margin: 0; touch-action: manipulation; }
         
-        /* 曉彤的說明文字區塊 */
-        .story-section { background: #fffbe6; border-left: 5px solid #ffe58f; padding: 18px; border-radius: 12px; margin-bottom: 25px; width: 100%; max-width: 450px; box-sizing: border-box; line-height: 1.8; color: #856404; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .story-section p { margin: 10px 0; font-weight: bold; } /* 文字加粗 */
-        .highlight { font-weight: 900; color: #d48806; border-bottom: 2px solid #ffe58f; }
+        /* 曉彤的說明文字區塊 - 字體放大 */
+        .story-section { background: #fffbe6; border-left: 5px solid #ffe58f; padding: 20px; border-radius: 12px; margin-bottom: 25px; width: 100%; max-width: 480px; box-sizing: border-box; line-height: 1.8; color: #856404; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .story-section p { margin: 12px 0; font-weight: bold; } 
+        .highlight { font-weight: 900; color: #d48806; border-bottom: 2px solid #ffe58f; font-size: 20px; }
 
-        .game-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; box-sizing: border-box; }
+        .game-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 480px; position: relative; box-sizing: border-box; }
         
         .image-box { width: 100%; margin-bottom: 20px; text-align: center; }
         .image-box img { width: 100%; border-radius: 10px; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -21,20 +21,21 @@
         
         #line-canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
 
-        .column { display: flex; flex-direction: column; gap: 28px; z-index: 2; position: relative; }
-        .dot { width: 14px; height: 14px; background: #ddd; border-radius: 50%; display: inline-block; flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 2px #ddd; }
+        .column { display: flex; flex-direction: column; gap: 30px; z-index: 2; position: relative; }
+        .dot { width: 16px; height: 16px; background: #ddd; border-radius: 50%; display: inline-block; flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 2px #ddd; }
         
-        .item { padding: 12px 10px; background: #fff; border: 2px solid #007bff; border-radius: 8px; cursor: pointer; user-select: none; transition: all 0.2s; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        /* 選項字體放大 */
+        .item { padding: 14px 12px; background: #fff; border: 2px solid #007bff; border-radius: 10px; cursor: pointer; user-select: none; transition: all 0.2s; font-weight: bold; font-size: 17px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
         .item.selected { background: #007bff; color: white; box-shadow: 0 0 12px rgba(0,123,255,0.4); transform: translateY(-2px); }
         .item.selected .dot { background: white; box-shadow: 0 0 0 2px white; }
 
-        .btns { margin-top: 30px; display: flex; gap: 12px; width: 100%; }
-        button { flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
+        .btns { margin-top: 35px; display: flex; gap: 12px; width: 100%; }
+        button { flex: 1; padding: 18px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 18px; transition: opacity 0.2s; }
         .check-btn { background: #28a745; color: white; }
         .reset-btn { background: #6c757d; color: white; }
         button:active { opacity: 0.8; }
         
-        #msg { margin-top: 18px; font-weight: bold; height: 24px; text-align: center; font-size: 1.1em; }
+        #msg { margin-top: 20px; font-weight: bold; height: 30px; text-align: center; font-size: 1.3em; }
     </style>
 </head>
 <body>
@@ -44,7 +45,7 @@
         <p>曉彤拿出一張紙，上面畫著手機側邊的三顆按鈕，分別寫上 <span class="highlight">1、2、3</span>。</p>
         <p>她告訴媽媽： 「媽，我們來玩連連看。我這裡有兩組線索：」</p>
         <p>曉彤指著紙問：<span class="highlight">「媽，妳看這兩組線索裡，哪一個功能是重複出現的？再推測出每個按鈕的功能。」</span></p>
-        <p style="text-align: right; font-style: italic; font-size: 0.9em; opacity: 0.8; font-weight: bold;">—— 請將按鈕連線到對應的功能上</p>
+        <p style="text-align: right; font-style: italic; font-size: 0.95em; opacity: 0.8; font-weight: bold;">—— 請將按鈕連線到對應的功能上</p>
     </div>
 
     <div class="game-container">
@@ -131,7 +132,7 @@
                 ctx.moveTo(startX, startY);
                 ctx.lineTo(endX, endY);
                 ctx.strokeStyle = '#007bff';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 4; // 線條加粗
                 ctx.lineCap = 'round';
                 ctx.stroke();
             });
@@ -139,8 +140,9 @@
 
         function checkAll() {
             if (connections.length < 3) {
-                document.getElementById('msg').innerText = "請完成所有連線！";
-                document.getElementById('msg').style.color = "#856404";
+                const msg = document.getElementById('msg');
+                msg.innerText = "請完成所有連線！";
+                msg.style.color = "#856404";
                 return;
             }
 
