@@ -2,31 +2,32 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>按鍵邏輯推理遊戲</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; padding: 20px; }
-        h2 { color: #333; margin-bottom: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; padding: 20px; touch-action: manipulation; }
+        h2 { color: #333; margin-bottom: 20px; text-align: center; font-size: 1.5em; }
         
-        .image-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: 600px; width: 100%; text-align: center; }
+        .image-container { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; max-width: 100%; width: 100%; text-align: center; box-sizing: border-box; }
         .logic-image { width: 100%; height: auto; border-radius: 8px; }
 
-        .drag-section { width: 100%; max-width: 500px; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h3 { margin-top: 0; color: #444; }
+        .drag-section { width: 100%; max-width: 500px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; }
+        h3 { margin-top: 0; color: #444; font-size: 1.2em; }
         
-        .drag-item { padding: 12px; margin: 5px; background: #007bff; color: white; border-radius: 6px; cursor: move; text-align: center; display: inline-block; min-width: 90px; transition: transform 0.2s; }
-        .drag-item:hover { transform: scale(1.05); background: #0056b3; }
+        .drag-item { padding: 12px; margin: 5px; background: #007bff; color: white; border-radius: 6px; cursor: move; text-align: center; display: inline-block; min-width: 90px; touch-action: none; user-select: none; }
         
-        .drop-zone { border: 2px dashed #cbd5e0; padding: 12px; margin: 10px 0; min-height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; background: #fafafa; }
-        .label { font-weight: bold; width: 100px; color: #555; font-size: 1.1em; }
+        .drop-zone { border: 2px dashed #cbd5e0; padding: 10px; margin: 10px 0; min-height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; background: #fafafa; position: relative; }
+        .label { font-weight: bold; width: 85px; color: #555; font-size: 1em; flex-shrink: 0; }
+        .target-box { flex-grow: 1; display: flex; justify-content: center; align-items: center; min-height: 50px; pointer-events: auto; }
         
-        .button-group { display: flex; gap: 12px; margin-top: 25px; }
+        .button-group { display: flex; gap: 12px; margin-top: 20px; }
         .check-btn { flex: 2; padding: 14px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
         .reset-btn { flex: 1; padding: 14px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
-        .check-btn:hover { background: #218838; }
-        .reset-btn:hover { background: #5a6268; }
         
-        #result { margin-top: 20px; font-weight: bold; font-size: 1.2em; min-height: 24px; text-align: center; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 1.1em; min-height: 24px; text-align: center; }
+
+        /* 拖曳中的視覺效果 */
+        .dragging { opacity: 0.5; }
     </style>
 </head>
 <body>
@@ -34,32 +35,29 @@
     <h2>觀察圖片並配對按鍵功能</h2>
     
     <div class="image-container">
-        <!-- 引用圖片 question2.png -->
         <img src="question2.png" alt="按鍵邏輯圖" class="logic-image">
     </div>
 
     <div class="drag-section">
         <h3>拖曳配對功能</h3>
         
-        <!-- 選項池 -->
-        <div id="options-pool" class="drop-zone" style="border-style: solid; justify-content: center; background: #f8f9fa;" ondragover="allowDrop(event)" ondrop="drop(event, 'options-pool')">
+        <div id="options-pool" class="drop-zone" style="border-style: solid; justify-content: center; background: #f8f9fa;">
             <div class="drag-item" draggable="true" id="f-vol-up">提高音量</div>
             <div class="drag-item" draggable="true" id="f-vol-down">降低音量</div>
             <div class="drag-item" draggable="true" id="f-power">開關機</div>
         </div>
 
-        <!-- 放置目標 -->
-        <div class="drop-zone" ondragover="allowDrop(event)" ondrop="drop(event, 'ans1')">
+        <div class="drop-zone">
             <span class="label">按鈕 [ 1 ]：</span>
-            <div id="ans1" style="flex-grow: 1; display: flex; justify-content: center; min-height: 40px;"></div>
+            <div id="ans1" class="target-box"></div>
         </div>
-        <div class="drop-zone" ondragover="allowDrop(event)" ondrop="drop(event, 'ans2')">
+        <div class="drop-zone">
             <span class="label">按鈕 [ 2 ]：</span>
-            <div id="ans2" style="flex-grow: 1; display: flex; justify-content: center; min-height: 40px;"></div>
+            <div id="ans2" class="target-box"></div>
         </div>
-        <div class="drop-zone" ondragover="allowDrop(event)" ondrop="drop(event, 'ans3')">
+        <div class="drop-zone">
             <span class="label">按鈕 [ 3 ]：</span>
-            <div id="ans3" style="flex-grow: 1; display: flex; justify-content: center; min-height: 40px;"></div>
+            <div id="ans3" class="target-box"></div>
         </div>
 
         <div class="button-group">
@@ -71,28 +69,67 @@
     </div>
 
     <script>
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
+        const items = document.querySelectorAll('.drag-item');
+        const zones = document.querySelectorAll('.target-box, #options-pool');
 
-        function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
-
-        document.querySelectorAll('.drag-item').forEach(item => {
-            item.addEventListener('dragstart', drag);
+        // 電腦版拖曳
+        items.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.id);
+                item.classList.add('dragging');
+            });
+            item.addEventListener('dragend', () => item.classList.remove('dragging'));
         });
 
-        function drop(ev, targetId) {
-            ev.preventDefault();
-            const data = ev.dataTransfer.getData("text");
-            const draggedElement = document.getElementById(data);
-            const dropZone = document.getElementById(targetId);
-            
-            if (targetId === 'options-pool' || dropZone.children.length === 0) {
-                dropZone.appendChild(draggedElement);
-            }
-        }
+        zones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => e.preventDefault());
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text/plain');
+                const el = document.getElementById(id);
+                if (zone.id === 'options-pool' || zone.children.length === 0) {
+                    zone.appendChild(el);
+                }
+            });
+        });
+
+        // 手機版觸控支援補丁
+        let activeItem = null;
+
+        items.forEach(item => {
+            item.addEventListener('touchstart', function(e) {
+                activeItem = this;
+                this.classList.add('dragging');
+            }, {passive: true});
+
+            item.addEventListener('touchmove', function(e) {
+                if (!activeItem) return;
+                e.preventDefault(); // 阻止螢幕捲動
+                const touch = e.touches[0];
+                activeItem.style.position = 'fixed';
+                activeItem.style.left = touch.clientX - activeItem.offsetWidth / 2 + 'px';
+                activeItem.style.top = touch.clientY - activeItem.offsetHeight / 2 + 'px';
+                activeItem.style.zIndex = '1000';
+            }, {passive: false});
+
+            item.addEventListener('touchend', function(e) {
+                if (!activeItem) return;
+                this.classList.remove('dragging');
+                activeItem.style.position = '';
+                activeItem.style.left = '';
+                activeItem.style.top = '';
+                activeItem.style.zIndex = '';
+
+                const touch = e.changedTouches[0];
+                const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                const zone = target ? target.closest('.target-box, #options-pool') : null;
+
+                if (zone && (zone.id === 'options-pool' || zone.children.length === 0)) {
+                    zone.appendChild(activeItem);
+                }
+                activeItem = null;
+            });
+        });
 
         function checkAnswer() {
             const a1 = document.getElementById('ans1').firstElementChild?.id;
@@ -100,7 +137,6 @@
             const a3 = document.getElementById('ans3').firstElementChild?.id;
             const resultTxt = document.getElementById('result');
 
-            // 最終更新後的正確答案：1:提高音量, 2:降低音量, 3:開關機
             if (a1 === 'f-vol-up' && a2 === 'f-vol-down' && a3 === 'f-power') {
                 resultTxt.innerText = "🎉 太棒了！這是正確的功能對應！";
                 resultTxt.style.color = "#28a745";
@@ -112,7 +148,6 @@
 
         function resetGame() {
             const pool = document.getElementById('options-pool');
-            const items = document.querySelectorAll('.drag-item');
             items.forEach(item => pool.appendChild(item));
             document.getElementById('result').innerText = "";
         }
