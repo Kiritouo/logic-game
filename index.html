@@ -5,46 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>曉彤的按鍵推理遊戲</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; padding: 20px; margin: 0; touch-action: manipulation; }
+        body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; padding: 20px; margin: 0; touch-action: manipulation; }
         
-        /* 故事說明文字區塊 */
-        .story-section { background: #fffbe6; border-left: 5px solid #ffe58f; padding: 15px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 450px; box-sizing: border-box; line-height: 1.6; color: #856404; font-size: 15px; }
-        .story-section p { margin: 8px 0; }
-        .highlight { font-weight: bold; color: #d48806; }
+        /* 曉彤的說明文字區塊 */
+        .story-section { background: #fffbe6; border-left: 5px solid #ffe58f; padding: 18px; border-radius: 12px; margin-bottom: 25px; width: 100%; max-width: 450px; box-sizing: border-box; line-height: 1.8; color: #856404; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .story-section p { margin: 10px 0; font-weight: bold; } /* 文字加粗 */
+        .highlight { font-weight: 900; color: #d48806; border-bottom: 2px solid #ffe58f; }
 
         .game-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; box-sizing: border-box; }
         
         .image-box { width: 100%; margin-bottom: 20px; text-align: center; }
-        .image-box img { width: 100%; border-radius: 10px; display: block; }
+        .image-box img { width: 100%; border-radius: 10px; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-        .matching-area { display: flex; justify-content: space-between; position: relative; margin-top: 30px; padding: 0 5px; }
+        .matching-area { display: flex; justify-content: space-between; position: relative; margin-top: 35px; padding: 0 5px; }
         
         #line-canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
 
-        .column { display: flex; flex-direction: column; gap: 25px; z-index: 2; position: relative; }
+        .column { display: flex; flex-direction: column; gap: 28px; z-index: 2; position: relative; }
         .dot { width: 14px; height: 14px; background: #ddd; border-radius: 50%; display: inline-block; flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 2px #ddd; }
         
-        .item { padding: 12px 10px; background: #fff; border: 2px solid #007bff; border-radius: 8px; cursor: pointer; user-select: none; transition: 0.2s; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-        .item.selected { background: #007bff; color: white; box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+        .item { padding: 12px 10px; background: #fff; border: 2px solid #007bff; border-radius: 8px; cursor: pointer; user-select: none; transition: all 0.2s; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .item.selected { background: #007bff; color: white; box-shadow: 0 0 12px rgba(0,123,255,0.4); transform: translateY(-2px); }
         .item.selected .dot { background: white; box-shadow: 0 0 0 2px white; }
 
-        .btns { margin-top: 30px; display: flex; gap: 10px; width: 100%; }
-        button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btns { margin-top: 30px; display: flex; gap: 12px; width: 100%; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
         .check-btn { background: #28a745; color: white; }
         .reset-btn { background: #6c757d; color: white; }
-        #msg { margin-top: 15px; font-weight: bold; height: 24px; text-align: center; }
+        button:active { opacity: 0.8; }
+        
+        #msg { margin-top: 18px; font-weight: bold; height: 24px; text-align: center; font-size: 1.1em; }
     </style>
 </head>
 <body>
 
-    <!-- 曉彤的故事說明文字 -->
+    <!-- 故事引導區 -->
     <div class="story-section">
         <p>曉彤拿出一張紙，上面畫著手機側邊的三顆按鈕，分別寫上 <span class="highlight">1、2、3</span>。</p>
-        <p>她告訴媽媽：「媽，我們來玩連連看。我這裡有兩組線索：」</p>
+        <p>她告訴媽媽： 「媽，我們來玩連連看。我這裡有兩組線索：」</p>
         <p>曉彤指著紙問：<span class="highlight">「媽，妳看這兩組線索裡，哪一個功能是重複出現的？再推測出每個按鈕的功能。」</span></p>
+        <p style="text-align: right; font-style: italic; font-size: 0.9em; opacity: 0.8; font-weight: bold;">—— 請將按鈕連線到對應的功能上</p>
     </div>
 
     <div class="game-container">
+        <!-- 核心邏輯圖 -->
         <div class="image-box">
             <img src="question2.png" alt="邏輯圖">
         </div>
@@ -52,12 +56,14 @@
         <div class="matching-area" id="match-area">
             <canvas id="line-canvas"></canvas>
             
+            <!-- 左側按鈕區 -->
             <div class="column" id="left-col">
                 <div class="item" data-id="1" onclick="selectItem(this, 'left')">按鈕 [ 1 ] <span class="dot"></span></div>
                 <div class="item" data-id="2" onclick="selectItem(this, 'left')">按鈕 [ 2 ] <span class="dot"></span></div>
                 <div class="item" data-id="3" onclick="selectItem(this, 'left')">按鈕 [ 3 ] <span class="dot"></span></div>
             </div>
 
+            <!-- 右側功能區 -->
             <div class="column" id="right-col">
                 <div class="item" data-ans="f-vol-down" onclick="selectItem(this, 'right')"><span class="dot"></span> 降低音量</div>
                 <div class="item" data-ans="f-power" onclick="selectItem(this, 'right')"><span class="dot"></span> 開關機</div>
@@ -134,12 +140,12 @@
         function checkAll() {
             if (connections.length < 3) {
                 document.getElementById('msg').innerText = "請完成所有連線！";
+                document.getElementById('msg').style.color = "#856404";
                 return;
             }
 
             let correctCount = 0;
             connections.forEach(c => {
-                // 1:提高音量, 2:降低音量, 3:開關機
                 if (c.leftId === "1" && c.rightAns === "f-vol-up") correctCount++;
                 if (c.leftId === "2" && c.rightAns === "f-vol-down") correctCount++;
                 if (c.leftId === "3" && c.rightAns === "f-power") correctCount++;
@@ -147,10 +153,10 @@
 
             const msg = document.getElementById('msg');
             if (correctCount === 3) {
-                msg.innerText = "🎉 全對了！太強了！";
+                msg.innerText = "🎉 曉彤：太厲害了！完全正確！";
                 msg.style.color = "#28a745";
             } else {
-                msg.innerText = `❌ 答案有誤，再觀察一下圖片連線！`;
+                msg.innerText = `❌ 曉彤：好像哪裡怪怪的，再試一次？`;
                 msg.style.color = "#dc3545";
             }
         }
