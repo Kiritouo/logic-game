@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>按鍵邏輯：連連看精準版</title>
+    <title>曉彤的按鍵推理遊戲</title>
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; padding: 20px; margin: 0; touch-action: manipulation; }
+        
+        /* 故事說明文字區塊 */
+        .story-section { background: #fffbe6; border-left: 5px solid #ffe58f; padding: 15px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 450px; box-sizing: border-box; line-height: 1.6; color: #856404; font-size: 15px; }
+        .story-section p { margin: 8px 0; }
+        .highlight { font-weight: bold; color: #d48806; }
+
         .game-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; box-sizing: border-box; }
         
         .image-box { width: 100%; margin-bottom: 20px; text-align: center; }
@@ -31,8 +37,14 @@
 </head>
 <body>
 
+    <!-- 曉彤的故事說明文字 -->
+    <div class="story-section">
+        <p>曉彤拿出一張紙，上面畫著手機側邊的三顆按鈕，分別寫上 <span class="highlight">1、2、3</span>。</p>
+        <p>她告訴媽媽：「媽，我們來玩連連看。我這裡有兩組線索：」</p>
+        <p>曉彤指著紙問：<span class="highlight">「媽，妳看這兩組線索裡，哪一個功能是重複出現的？再推測出每個按鈕的功能。」</span></p>
+    </div>
+
     <div class="game-container">
-        <h2>連連看：配對功能</h2>
         <div class="image-box">
             <img src="question2.png" alt="邏輯圖">
         </div>
@@ -47,7 +59,6 @@
             </div>
 
             <div class="column" id="right-col">
-                <!-- 這裡調整了選項順序 -->
                 <div class="item" data-ans="f-vol-down" onclick="selectItem(this, 'right')"><span class="dot"></span> 降低音量</div>
                 <div class="item" data-ans="f-power" onclick="selectItem(this, 'right')"><span class="dot"></span> 開關機</div>
                 <div class="item" data-ans="f-vol-up" onclick="selectItem(this, 'right')"><span class="dot"></span> 提高音量</div>
