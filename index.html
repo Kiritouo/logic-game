@@ -3,153 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>按鍵邏輯推理遊戲</title>
+    <title>按鍵邏輯：連連看精準版</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f2f5; padding: 20px; touch-action: manipulation; }
-        h2 { color: #333; margin-bottom: 20px; text-align: center; font-size: 1.5em; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f7f6; padding: 20px; margin: 0; touch-action: manipulation; }
+        .game-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; position: relative; box-sizing: border-box; }
         
-        .image-container { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; max-width: 100%; width: 100%; text-align: center; box-sizing: border-box; }
-        .logic-image { width: 100%; height: auto; border-radius: 8px; }
+        .image-box { width: 100%; margin-bottom: 20px; text-align: center; }
+        .image-box img { width: 100%; border-radius: 10px; display: block; }
 
-        .drag-section { width: 100%; max-width: 500px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; }
-        h3 { margin-top: 0; color: #444; font-size: 1.2em; }
+        .matching-area { display: flex; justify-content: space-between; position: relative; margin-top: 30px; padding: 0 5px; }
         
-        .drag-item { padding: 12px; margin: 5px; background: #007bff; color: white; border-radius: 6px; cursor: move; text-align: center; display: inline-block; min-width: 90px; touch-action: none; user-select: none; }
-        
-        .drop-zone { border: 2px dashed #cbd5e0; padding: 10px; margin: 10px 0; min-height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; background: #fafafa; position: relative; }
-        .label { font-weight: bold; width: 85px; color: #555; font-size: 1em; flex-shrink: 0; }
-        .target-box { flex-grow: 1; display: flex; justify-content: center; align-items: center; min-height: 50px; pointer-events: auto; }
-        
-        .button-group { display: flex; gap: 12px; margin-top: 20px; }
-        .check-btn { flex: 2; padding: 14px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .reset-btn { flex: 1; padding: 14px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
-        
-        #result { margin-top: 20px; font-weight: bold; font-size: 1.1em; min-height: 24px; text-align: center; }
+        #line-canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
 
-        /* 拖曳中的視覺效果 */
-        .dragging { opacity: 0.5; }
+        .column { display: flex; flex-direction: column; gap: 25px; z-index: 2; position: relative; }
+        .dot { width: 14px; height: 14px; background: #ddd; border-radius: 50%; display: inline-block; flex-shrink: 0; border: 2px solid #fff; box-shadow: 0 0 0 2px #ddd; }
+        
+        .item { padding: 12px 10px; background: #fff; border: 2px solid #007bff; border-radius: 8px; cursor: pointer; user-select: none; transition: 0.2s; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .item.selected { background: #007bff; color: white; box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+        .item.selected .dot { background: white; box-shadow: 0 0 0 2px white; }
+
+        .btns { margin-top: 30px; display: flex; gap: 10px; width: 100%; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .check-btn { background: #28a745; color: white; }
+        .reset-btn { background: #6c757d; color: white; }
+        #msg { margin-top: 15px; font-weight: bold; height: 24px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <h2>觀察圖片並配對按鍵功能</h2>
-    
-    <div class="image-container">
-        <img src="question2.png" alt="按鍵邏輯圖" class="logic-image">
-    </div>
-
-    <div class="drag-section">
-        <h3>拖曳配對功能</h3>
-        
-        <div id="options-pool" class="drop-zone" style="border-style: solid; justify-content: center; background: #f8f9fa;">
-            <div class="drag-item" draggable="true" id="f-vol-up">提高音量</div>
-            <div class="drag-item" draggable="true" id="f-vol-down">降低音量</div>
-            <div class="drag-item" draggable="true" id="f-power">開關機</div>
+    <div class="game-container">
+        <h2>連連看：配對功能</h2>
+        <div class="image-box">
+            <img src="question2.png" alt="邏輯圖">
         </div>
 
-        <div class="drop-zone">
-            <span class="label">按鈕 [ 1 ]：</span>
-            <div id="ans1" class="target-box"></div>
-        </div>
-        <div class="drop-zone">
-            <span class="label">按鈕 [ 2 ]：</span>
-            <div id="ans2" class="target-box"></div>
-        </div>
-        <div class="drop-zone">
-            <span class="label">按鈕 [ 3 ]：</span>
-            <div id="ans3" class="target-box"></div>
+        <div class="matching-area" id="match-area">
+            <canvas id="line-canvas"></canvas>
+            
+            <div class="column" id="left-col">
+                <div class="item" data-id="1" onclick="selectItem(this, 'left')">按鈕 [ 1 ] <span class="dot"></span></div>
+                <div class="item" data-id="2" onclick="selectItem(this, 'left')">按鈕 [ 2 ] <span class="dot"></span></div>
+                <div class="item" data-id="3" onclick="selectItem(this, 'left')">按鈕 [ 3 ] <span class="dot"></span></div>
+            </div>
+
+            <div class="column" id="right-col">
+                <!-- 這裡調整了選項順序 -->
+                <div class="item" data-ans="f-vol-down" onclick="selectItem(this, 'right')"><span class="dot"></span> 降低音量</div>
+                <div class="item" data-ans="f-power" onclick="selectItem(this, 'right')"><span class="dot"></span> 開關機</div>
+                <div class="item" data-ans="f-vol-up" onclick="selectItem(this, 'right')"><span class="dot"></span> 提高音量</div>
+            </div>
         </div>
 
-        <div class="button-group">
-            <button class="check-btn" onclick="checkAnswer()">驗證答案</button>
+        <div class="btns">
+            <button class="check-btn" onclick="checkAll()">驗證答案</button>
             <button class="reset-btn" onclick="resetGame()">重置</button>
         </div>
-        
-        <p id="result"></p>
+        <p id="msg"></p>
     </div>
 
     <script>
-        const items = document.querySelectorAll('.drag-item');
-        const zones = document.querySelectorAll('.target-box, #options-pool');
+        let selectedLeft = null;
+        let connections = []; 
+        const canvas = document.getElementById('line-canvas');
+        const ctx = canvas.getContext('2d');
+        const area = document.getElementById('match-area');
 
-        // 電腦版拖曳
-        items.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', e.target.id);
-                item.classList.add('dragging');
-            });
-            item.addEventListener('dragend', () => item.classList.remove('dragging'));
-        });
+        function resizeCanvas() {
+            canvas.width = area.clientWidth;
+            canvas.height = area.clientHeight;
+            drawLines();
+        }
 
-        zones.forEach(zone => {
-            zone.addEventListener('dragover', (e) => e.preventDefault());
-            zone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const id = e.dataTransfer.getData('text/plain');
-                const el = document.getElementById(id);
-                if (zone.id === 'options-pool' || zone.children.length === 0) {
-                    zone.appendChild(el);
-                }
-            });
-        });
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
 
-        // 手機版觸控支援補丁
-        let activeItem = null;
-
-        items.forEach(item => {
-            item.addEventListener('touchstart', function(e) {
-                activeItem = this;
-                this.classList.add('dragging');
-            }, {passive: true});
-
-            item.addEventListener('touchmove', function(e) {
-                if (!activeItem) return;
-                e.preventDefault(); // 阻止螢幕捲動
-                const touch = e.touches[0];
-                activeItem.style.position = 'fixed';
-                activeItem.style.left = touch.clientX - activeItem.offsetWidth / 2 + 'px';
-                activeItem.style.top = touch.clientY - activeItem.offsetHeight / 2 + 'px';
-                activeItem.style.zIndex = '1000';
-            }, {passive: false});
-
-            item.addEventListener('touchend', function(e) {
-                if (!activeItem) return;
-                this.classList.remove('dragging');
-                activeItem.style.position = '';
-                activeItem.style.left = '';
-                activeItem.style.top = '';
-                activeItem.style.zIndex = '';
-
-                const touch = e.changedTouches[0];
-                const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                const zone = target ? target.closest('.target-box, #options-pool') : null;
-
-                if (zone && (zone.id === 'options-pool' || zone.children.length === 0)) {
-                    zone.appendChild(activeItem);
-                }
-                activeItem = null;
-            });
-        });
-
-        function checkAnswer() {
-            const a1 = document.getElementById('ans1').firstElementChild?.id;
-            const a2 = document.getElementById('ans2').firstElementChild?.id;
-            const a3 = document.getElementById('ans3').firstElementChild?.id;
-            const resultTxt = document.getElementById('result');
-
-            if (a1 === 'f-vol-up' && a2 === 'f-vol-down' && a3 === 'f-power') {
-                resultTxt.innerText = "🎉 太棒了！這是正確的功能對應！";
-                resultTxt.style.color = "#28a745";
+        function selectItem(el, side) {
+            if (side === 'left') {
+                if (selectedLeft) selectedLeft.classList.remove('selected');
+                selectedLeft = el;
+                el.classList.add('selected');
             } else {
-                resultTxt.innerText = "❌ 答案不太對哦，再檢查看看吧。";
-                resultTxt.style.color = "#dc3545";
+                if (!selectedLeft) return;
+                connections = connections.filter(c => c.rightEl !== el && c.leftEl !== selectedLeft);
+                connections.push({
+                    leftEl: selectedLeft,
+                    rightEl: el,
+                    leftId: selectedLeft.getAttribute('data-id'),
+                    rightAns: el.getAttribute('data-ans')
+                });
+                selectedLeft.classList.remove('selected');
+                selectedLeft = null;
+                drawLines();
+            }
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const areaRect = area.getBoundingClientRect();
+
+            connections.forEach(c => {
+                const leftDot = c.leftEl.querySelector('.dot').getBoundingClientRect();
+                const rightDot = c.rightEl.querySelector('.dot').getBoundingClientRect();
+                
+                const startX = (leftDot.left + leftDot.width / 2) - areaRect.left;
+                const startY = (leftDot.top + leftDot.height / 2) - areaRect.top;
+                const endX = (rightDot.left + rightDot.width / 2) - areaRect.left;
+                const endY = (rightDot.top + rightDot.height / 2) - areaRect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.strokeStyle = '#007bff';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            });
+        }
+
+        function checkAll() {
+            if (connections.length < 3) {
+                document.getElementById('msg').innerText = "請完成所有連線！";
+                return;
+            }
+
+            let correctCount = 0;
+            connections.forEach(c => {
+                // 1:提高音量, 2:降低音量, 3:開關機
+                if (c.leftId === "1" && c.rightAns === "f-vol-up") correctCount++;
+                if (c.leftId === "2" && c.rightAns === "f-vol-down") correctCount++;
+                if (c.leftId === "3" && c.rightAns === "f-power") correctCount++;
+            });
+
+            const msg = document.getElementById('msg');
+            if (correctCount === 3) {
+                msg.innerText = "🎉 全對了！太強了！";
+                msg.style.color = "#28a745";
+            } else {
+                msg.innerText = `❌ 答案有誤，再觀察一下圖片連線！`;
+                msg.style.color = "#dc3545";
             }
         }
 
         function resetGame() {
-            const pool = document.getElementById('options-pool');
-            items.forEach(item => pool.appendChild(item));
-            document.getElementById('result').innerText = "";
+            connections = [];
+            selectedLeft = null;
+            document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('msg').innerText = "";
         }
     </script>
 </body>
